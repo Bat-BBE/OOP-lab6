@@ -29,7 +29,6 @@ public:
     }
 };
 
-
 class Shape2D : public Shape {
 public: 
     double center_x;
