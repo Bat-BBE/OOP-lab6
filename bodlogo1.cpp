@@ -135,7 +135,7 @@ public:
         : Shape2D(name, center_x, center_y), side_length(side_length) {
         calculateVertices();
     }
-    // Coardinates
+    // Coordinates
     void calculateVertices() {
         double height = (sqrt(3) / 2) * side_length;
 
