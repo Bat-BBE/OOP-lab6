@@ -33,71 +33,96 @@ class Shape2D : public Shape {
 public: 
     double center_x;
     double center_y;
+    double length;
+    double** coardinate;
 public:
     // baiguulagch
-    Shape2D(const char* name, double x, double y) 
-        : Shape(name), center_x(x), center_y(y) {}
-
+    Shape2D(const char* name, double x, double y, double l) 
+        : Shape(name), center_x(x), center_y(y), length(l){
+            coardinate = nullptr;
+        }
     // huulagch
     Shape2D(const Shape2D& shp) 
-        : Shape(shp), center_x(shp.center_x), center_y(shp.center_y) {}
+        : Shape(shp), center_x(shp.center_x), center_y(shp.center_y) {
+            coardinate = nullptr;
+        }
     // ustgagcj
     ~Shape2D() {
+        if (coardinate != nullptr) {
+            for (int i = 0; i < 4; i++) {
+                delete[] coardinate[i];
+            }
+            delete[] coardinate;
+        }
         cout << "Ustgasan Shape2D: " << name << endl;
     }
 };
 
 // Circle class
 class Circle : public Shape2D {
-private:
-    double radius;
 public:
     // baiguulagch
     Circle(const char* name, double center_x, double center_y, double radius)
-        : Shape2D(name, center_x, center_y), radius(radius) {}
+        : Shape2D(name, center_x, center_y, radius){
+            coardinates();
+        }
     // talbai oloh
     double area() {
-        return M_PI * radius * radius;
+        return M_PI * length * length;
     }
     // urt oloh
     double perimeter() {
-        return 2 * M_PI * radius;
+        return 2 * M_PI * length;
+    }
+    void coardinates() {
+        if(coardinate != nullptr) {
+            delete[] coardinate;
+        }
+        coardinate = new double*[1];
+        coardinate[0] = new double[2];
+
+        coardinate[0][0] = center_x;
+        coardinate[0][1] = center_y;
     }
     // hevleh
     void print() {
         cout << "Name: " << get_name() << ", Center: (" << center_x << ", " << center_y
-             << "), Radius: " << radius << endl;
+             << "), Radius: " << length << endl;
     }
     ~Circle() {
+        delete[] coardinate[0];
+        delete[] coardinate;
         cout << "Ustgasan Circle: " << name << endl;
     }
 };
-
-
 // Square class
 class Square : public Shape2D {
-private:
-    double side_length;
-    double coardinate[4][2]; // 4 oroin coardinate
 public:
     // Baiguulagch
     Square(const char* name, double center_x, double center_y, double side_length)
-        : Shape2D(name, center_x, center_y), side_length(side_length) {
+        : Shape2D(name, center_x, center_y, side_length) {
         calculateVertices();
     }
     // Oroin coardinates
     void calculateVertices() {
+        if(coardinate != nullptr) {
+            delete[] coardinate;
+        }
+        coardinate = new double*[4];
+        for (int i = 0; i < 4; i++) {
+            coardinate[i] = new double[2];
+        }
         coardinate[0][0] = center_x;
         coardinate[0][1] = center_y;
 
-        coardinate[1][0] = center_x + side_length;
+        coardinate[1][0] = center_x + length;
         coardinate[1][1] = center_y;
 
-        coardinate[2][0] = center_x + side_length;
-        coardinate[2][1] = center_y - side_length;
+        coardinate[2][0] = center_x +length;
+        coardinate[2][1] = center_y - length;
 
         coardinate[3][0] = center_x;
-        coardinate[3][1] = center_y - side_length;
+        coardinate[3][1] = center_y - length;
     }
     double print_coardinate() {
         for(int i=0; i<4; i++) {
@@ -110,48 +135,56 @@ public:
     // hevleh
     void print() {
         cout << "Name: " << get_name() << ", Center: (" << center_x << ", " << center_y
-             << "), Taliin urt: " << side_length << endl;
+             << "), Taliin urt: " <<length<< endl;
     }
     // Talbai oloh
     double area() {
-        return side_length * side_length;
+        return length * length;
     }
     // Perimeter oloh
     double perimeter() {
-        return 4 * side_length;
+        return 4 * length;
     }
     ~Square() {
+        for (int i = 0; i < 4; i++) {
+            delete[] coardinate[i];
+        }
+        delete[] coardinate;
         cout << "Ustgasan Square: " << name << endl;
     }
 };
 // Triangle class
 class Triangle : public Shape2D {
-private:
-    double side_length;
-    double vertices[3][2]; // 3 oroin coardinates
 public:
     // Baiguulagch
     Triangle(const char* name, double center_x, double center_y, double side_length)
-        : Shape2D(name, center_x, center_y), side_length(side_length) {
+        : Shape2D(name, center_x, center_y, side_length) {
         calculateVertices();
     }
     // Coordinates
     void calculateVertices() {
-        double height = (sqrt(3) / 2) * side_length;
+        if(coardinate != nullptr) {
+            delete[] coardinate;
+        }
+        coardinate = new double*[3];
+        for (int i = 0; i < 3; i++) {
+            coardinate[i] = new double[2];
+        }
+        double height = (sqrt(3) / 2) * length;
 
-        vertices[0][0] = center_x;
-        vertices[0][1] = center_y;
+        coardinate[0][0] = center_x;
+        coardinate[0][1] = center_y;
 
-        vertices[1][0] = center_x - side_length / 2;
-        vertices[1][1] = center_y - height;
+        coardinate[1][0] = center_x - length / 2;
+        coardinate[1][1] = center_y - height;
 
-        vertices[2][0] = center_x + side_length / 2;
-        vertices[2][1] = center_y - height;
+        coardinate[2][0] = center_x + length / 2;
+        coardinate[2][1] = center_y - height;
     }
     double print_coardinate() {
         for(int i=0; i<3; i++) {
             for(int j=0; j<1; j++) {
-                cout<< "    courdinate: "<< vertices[i][j] << " "<<vertices[i][j+1];
+                cout<< "    courdinate: "<< coardinate[i][j] << " "<<coardinate[i][j+1];
             }
             cout << endl;
         }
@@ -159,17 +192,21 @@ public:
     // hevleh
     void print() {
         cout<<"Name: "<< get_name() << ", Center: (" << center_x << ", " << center_y
-             << "), Taliin urt: " << side_length << endl;
+             << "), Taliin urt: " <<length<< endl;
     }
     // Talbai oloh function
     double area(){
-        return (sqrt(3)/4 *side_length*side_length);
+        return (sqrt(3)/4 *length*length);
     }
     // Perimeter oloh 
     double perimeter() {
-        return 3 * side_length;
+        return 3 *length;
     }
     ~Triangle() {
+        for (int i = 0; i < 3; i++) {
+            delete[] coardinate[i];
+        }
+        delete[] coardinate;
         cout << "Ustgasan Triangle: " << name << endl;
     }
 };
@@ -178,7 +215,7 @@ main(){
     sha1.print();
     Shape sha1_1 = sha1;
     sha1_1.print();
-    Shape2D sha2("Square", 0, 0);
+    Shape2D sha2("Square", 0, 0, 0);
     sha2.print();
     Shape2D sha2_1 = sha2;
     sha2_1.print();
